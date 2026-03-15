@@ -1,5 +1,5 @@
 // ─── 모델 설정 ──────────────────────────────────────────────────────────────
-const URL = "https://teachablemachine.withgoogle.com/models/lqfxaA079/";
+const MODEL_URL = "https://teachablemachine.withgoogle.com/models/lqfxaA079/";
 
 // ─── 결과 텍스트 매핑 ────────────────────────────────────────────────────────
 const MOOD_RESULTS = {
@@ -74,15 +74,16 @@ uploadBox.addEventListener("drop", (e) => {
 const handleFile = (file) => {
   const reader = new FileReader();
   reader.onload = (event) => {
-    previewImage.src = event.target.result;
+    // onload 핸들러를 src 설정 전에 먼저 등록해야 data URL 경쟁 조건 방지
     previewImage.onload = () => {
       currentImageElement = previewImage;
+      analyzeBtn.disabled = false;
     };
+    previewImage.src = event.target.result;
     // UI 전환: 업로드 박스 숨기고 미리보기 표시
     uploadLabel.style.display = "none";
     previewContainer.classList.add("visible");
     resultSection.classList.remove("visible");
-    analyzeBtn.disabled = false;
   };
   reader.readAsDataURL(file);
 };
@@ -106,8 +107,8 @@ retryBtn.addEventListener("click", resetUpload);
 // ─── 모델 로드 (첫 분석 시 lazy load) ───────────────────────────────────────
 const loadModel = async () => {
   if (model) return;
-  const modelURL     = URL + "model.json";
-  const metadataURL  = URL + "metadata.json";
+  const modelURL    = MODEL_URL + "model.json";
+  const metadataURL = MODEL_URL + "metadata.json";
   model = await tmImage.load(modelURL, metadataURL);
 };
 
