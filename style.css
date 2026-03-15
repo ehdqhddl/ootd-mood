@@ -460,6 +460,23 @@ html, body {
   background: rgba(139, 92, 246, 0.06);
 }
 
+/* ─── Privacy Notice ────────────────────────────────────── */
+.privacy-notice {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
+
+.privacy-icon {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
 /* ─── Responsive ────────────────────────────────────────── */
 @media (max-width: 480px) {
   .app-wrapper {
