@@ -6,7 +6,7 @@ OG Image Generator for AI OOTD 무드 진단기
 from PIL import Image, ImageDraw, ImageFont
 import math
 
-W, H = 800, 400
+W, H = 400, 400
 OUT = "og-image.png"
 
 FONT_KO   = "/System/Library/Fonts/Supplemental/AppleGothic.ttf"
@@ -97,63 +97,51 @@ def generate():
     overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     od = ImageDraw.Draw(overlay)
 
-    # 2. 퍼플 방사형 글로우 (좌측)
-    draw_radial_gradient_overlay(od, 150, H // 2, 280, (100, 40, 220), max_alpha=90)
-    # 핑크 방사형 글로우 (우측)
-    draw_radial_gradient_overlay(od, W - 130, H // 2 + 40, 260, (200, 40, 140), max_alpha=70)
+    # 2. 방사형 글로우 (중앙 상단 퍼플 + 하단 핑크)
+    draw_radial_gradient_overlay(od, W // 2, 100,  260, (100, 40, 220), max_alpha=100)
+    draw_radial_gradient_overlay(od, W // 2, H - 80, 220, (200, 40, 140), max_alpha=80)
 
     img = Image.alpha_composite(img, overlay)
     draw = ImageDraw.Draw(img)
 
-    # 3. 격자 도트 패턴 (미묘한 배경 텍스처)
-    for gx in range(0, W, 30):
-        for gy in range(0, H, 30):
-            draw.ellipse([gx-1, gy-1, gx+1, gy+1], fill=(255, 255, 255, 18))
+    # 3. 격자 도트 패턴
+    for gx in range(0, W, 28):
+        for gy in range(0, H, 28):
+            draw.ellipse([gx-1, gy-1, gx+1, gy+1], fill=(255, 255, 255, 16))
 
-    # 4. 상단 뱃지: "2026 TREND"
-    badge_font = ImageFont.truetype(FONT_BOLD, 15)
-    badge_text = "  2026 TREND  "
+    # 4. 상단 뱃지 "2026 TREND" — 중앙 정렬
+    badge_font = ImageFont.truetype(FONT_BOLD, 13)
+    badge_text = "2026 TREND"
     bb = draw.textbbox((0, 0), badge_text, font=badge_font)
-    bw = bb[2] - bb[0] + 20
+    bw = bb[2] - bb[0] + 24
     bh = bb[3] - bb[1] + 12
-    bx, by = 56, 52
+    bx = (W - bw) // 2
+    by = 36
     badge_bg = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
     bbg_d = ImageDraw.Draw(badge_bg)
     bbg_d.rounded_rectangle([0, 0, bw - 1, bh - 1], radius=bh // 2,
                              fill=(120, 60, 240, 45),
                              outline=(139, 92, 246, 180), width=2)
     img.paste(badge_bg, (bx, by), badge_bg)
-    draw.text((bx + 10, by + 6), badge_text.strip(), font=badge_font,
+    draw.text((bx + 12, by + 6), badge_text, font=badge_font,
               fill=(180, 140, 255, 255))
 
-    # 5. 메인 타이틀 "AI OOTD" — 그라데이션
-    title_font = ImageFont.truetype(FONT_BOLD, 96)
+    # 5. 메인 타이틀 "AI OOTD" — 중앙 정렬 그라데이션
+    title_font = ImageFont.truetype(FONT_BOLD, 82)
+    tb = draw.textbbox((0, 0), "AI OOTD", font=title_font)
+    tx = (W - (tb[2] - tb[0])) // 2
     draw_gradient_text(img, "AI OOTD", title_font,
-                       x=52, y=90,
+                       x=tx, y=78,
                        c1=(160, 100, 255),
                        c2=(240, 80, 180))
 
-    # 6. 서브타이틀 "무드 진단기"
-    sub_font = ImageFont.truetype(FONT_KO, 40)
-    draw_gradient_text(img, "무드 진단기", sub_font,
-                       x=56, y=212,
-                       c1=(200, 160, 255),
-                       c2=(255, 130, 210))
-
-    # 7. 설명 텍스트
-    desc_font = ImageFont.truetype(FONT_KO, 18)
-    draw = ImageDraw.Draw(img)
-    draw.text((58, 272), "내 스타일이 어떤 무드인지 AI가 찰떡같이 알아맞혀줘",
-              font=desc_font, fill=(160, 155, 200, 220))
-
-    # 8. 우측 장식 원 (네온 링)
-    ring_cx, ring_cy = 638, 200
+    # 6. 네온 링 장식 (타이틀 아래, 중앙)
+    ring_cx, ring_cy = W // 2, 226
     for r, alpha, color in [
-        (120, 30,  (139, 92, 246)),
-        (102, 60,  (139, 92, 246)),
-        ( 86, 100, (180, 100, 255)),
-        ( 70, 50,  (236, 72, 153)),
-        ( 54, 90,  (236, 72, 153)),
+        (52, 35,  (139, 92, 246)),
+        (42, 70,  (160, 80, 255)),
+        (32, 110, (200, 60, 200)),
+        (22, 70,  (236, 72, 153)),
     ]:
         ring_overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         rd = ImageDraw.Draw(ring_overlay)
@@ -161,36 +149,51 @@ def generate():
                    outline=(*color, alpha), width=2)
         img = Image.alpha_composite(img, ring_overlay)
 
-    # 내부 글로우
     inner_overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     id_ = ImageDraw.Draw(inner_overlay)
-    draw_radial_gradient_overlay(id_, ring_cx, ring_cy, 60, (180, 100, 255), max_alpha=60)
+    draw_radial_gradient_overlay(id_, ring_cx, ring_cy, 28, (180, 100, 255), max_alpha=70)
     img = Image.alpha_composite(img, inner_overlay)
     draw = ImageDraw.Draw(img)
 
-    # 링 안에 십자 별 (직접 그리기)
+    # 링 안 십자별
     sc, sr = ring_cx, ring_cy
-    star_color = (220, 180, 255, 220)
+    star_color = (220, 180, 255, 230)
     star_overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     sd = ImageDraw.Draw(star_overlay)
-    arm = 15
-    thick = 3
+    arm, thick = 10, 2
     sd.rectangle([sc - thick, sr - arm, sc + thick, sr + arm], fill=star_color)
     sd.rectangle([sc - arm, sr - thick, sc + arm, sr + thick], fill=star_color)
     for d in range(-arm, arm):
-        sx, sy = sc + d, sr + d
-        sd.ellipse([sx - thick//2, sy - thick//2, sx + thick//2, sy + thick//2], fill=star_color)
-        sx2, sy2 = sc + d, sr - d
-        sd.ellipse([sx2 - thick//2, sy2 - thick//2, sx2 + thick//2, sy2 + thick//2], fill=star_color)
+        for s in [(sc+d, sr+d), (sc+d, sr-d)]:
+            sd.ellipse([s[0]-1, s[1]-1, s[0]+1, s[1]+1], fill=star_color)
     img = Image.alpha_composite(img, star_overlay)
     draw = ImageDraw.Draw(img)
 
+    # 7. 서브타이틀 "무드 진단기" — 중앙
+    sub_font = ImageFont.truetype(FONT_KO, 32)
+    sb = draw.textbbox((0, 0), "무드 진단기", font=sub_font)
+    sx = (W - (sb[2] - sb[0])) // 2
+    draw_gradient_text(img, "무드 진단기", sub_font,
+                       x=sx, y=258,
+                       c1=(200, 160, 255),
+                       c2=(255, 130, 210))
+
+    # 8. 설명 텍스트 — 중앙
+    desc_font = ImageFont.truetype(FONT_KO, 14)
+    draw = ImageDraw.Draw(img)
+    desc = "AI가 찰떡같이 알아맞혀줘"
+    db = draw.textbbox((0, 0), desc, font=desc_font)
+    dx = (W - (db[2] - db[0])) // 2
+    draw.text((dx, 308), desc, font=desc_font, fill=(160, 155, 200, 200))
+
     # 9. 하단 구분선 + URL
-    line_y = H - 46
-    draw.line([(56, line_y), (W - 56, line_y)], fill=(255, 255, 255, 25), width=1)
-    url_font = ImageFont.truetype(FONT_REG, 16)
-    draw.text((58, line_y + 10), "ootd-mood.ehdqhddl91.workers.dev",
-              font=url_font, fill=(140, 130, 180, 180))
+    line_y = H - 42
+    draw.line([(40, line_y), (W - 40, line_y)], fill=(255, 255, 255, 25), width=1)
+    url_font = ImageFont.truetype(FONT_REG, 13)
+    url_text = "ootd-mood.ehdqhddl91.workers.dev"
+    ub = draw.textbbox((0, 0), url_text, font=url_font)
+    ux = (W - (ub[2] - ub[0])) // 2
+    draw.text((ux, line_y + 10), url_text, font=url_font, fill=(140, 130, 180, 180))
 
     # 10. PNG로 저장
     final = img.convert("RGB")
