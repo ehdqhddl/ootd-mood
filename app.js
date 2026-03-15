@@ -164,27 +164,34 @@ const showLoading = (visible) => {
   loadingOverlay.classList.toggle("visible", visible);
 };
 
+// ─── 카카오 SDK 초기화 ────────────────────────────────────────────────────────
+Kakao.init("a9c5a8d8900bca75619ed492127a0b50");
+
 // ─── 카카오톡 공유 ───────────────────────────────────────────────────────────
 shareBtn.addEventListener("click", () => {
   const className = resultClass.textContent || "나의 OOTD 무드";
-  const shareText = `AI OOTD 무드 진단 결과: ${className}\n${MOOD_RESULTS[className]?.text ?? ""}\n\n나도 해보기 👉 https://ootd-mood.pages.dev`;
+  const data = MOOD_RESULTS[className] ?? { badge: "MOOD", text: "" };
+  const serviceUrl = "https://ootd-mood.pages.dev";
 
-  // Kakao SDK가 로드된 경우 사용, 아니면 클립보드 복사 + 안내
-  if (window.Kakao && window.Kakao.isInitialized()) {
-    Kakao.Share.sendDefault({
-      objectType: "text",
-      text: shareText,
+  Kakao.Share.sendDefault({
+    objectType: "feed",
+    content: {
+      title: `나의 OOTD 무드는 "${className}"`,
+      description: data.text,
+      imageUrl: "https://opengraph.githubassets.com/1/ehdqhddl/ootd-mood",
       link: {
-        mobileWebUrl: window.location.href,
-        webUrl: window.location.href,
+        mobileWebUrl: serviceUrl,
+        webUrl: serviceUrl,
       },
-    });
-  } else {
-    // 클립보드 복사 후 카카오톡 열기 유도
-    navigator.clipboard.writeText(shareText).then(() => {
-      alert("링크가 복사됐어! 카카오톡에 붙여넣기 해서 친구한테 자랑해봐 😎");
-    }).catch(() => {
-      alert(`카카오톡으로 공유해봐!\n\n${shareText}`);
-    });
-  }
+    },
+    buttons: [
+      {
+        title: "나도 진단받기 ✨",
+        link: {
+          mobileWebUrl: serviceUrl,
+          webUrl: serviceUrl,
+        },
+      },
+    ],
+  });
 });
