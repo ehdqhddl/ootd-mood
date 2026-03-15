@@ -178,7 +178,7 @@ shareBtn.addEventListener("click", () => {
     content: {
       title: `나의 OOTD 무드는 "${className}"`,
       description: data.text,
-      imageUrl: "https://opengraph.githubassets.com/1/ehdqhddl/ootd-mood",
+      imageUrl: "https://ootd-mood.ehdqhddl91.workers.dev/og-image.png",
       link: {
         mobileWebUrl: serviceUrl,
         webUrl: serviceUrl,
