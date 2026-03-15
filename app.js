@@ -171,7 +171,7 @@ Kakao.init("a9c5a8d8900bca75619ed492127a0b50");
 shareBtn.addEventListener("click", () => {
   const className = resultClass.textContent || "나의 OOTD 무드";
   const data = MOOD_RESULTS[className] ?? { badge: "MOOD", text: "" };
-  const serviceUrl = "https://ootd-mood.pages.dev";
+  const serviceUrl = "https://ootd-mood.ehdqhddl91.workers.dev";
 
   Kakao.Share.sendDefault({
     objectType: "feed",
