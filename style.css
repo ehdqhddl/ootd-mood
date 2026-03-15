@@ -271,7 +271,7 @@ html, body {
 }
 
 .loading-text {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   text-align: center;
   line-height: 1.6;
@@ -279,6 +279,13 @@ html, body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  transition: opacity 0.3s ease;
+  min-height: 1.6em;
+  padding: 0 24px;
+}
+
+.loading-text.fade-out {
+  opacity: 0;
 }
 
 .loading-dots {
@@ -323,7 +330,7 @@ html, body {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
-  padding: 28px 24px;
+  padding: 24px 22px;
   position: relative;
   overflow: hidden;
 }
@@ -336,6 +343,11 @@ html, body {
   background: var(--gradient);
 }
 
+/* 메인 타이틀 카드 */
+.result-card--main {
+  background: linear-gradient(145deg, #13122a, #10101e);
+}
+
 .result-badge {
   display: inline-block;
   padding: 5px 14px;
@@ -345,25 +357,87 @@ html, body {
   font-weight: 800;
   letter-spacing: 0.12em;
   color: #fff;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
-.result-class {
-  font-size: 26px;
+.result-title {
+  font-size: 20px;
   font-weight: 800;
   letter-spacing: -0.02em;
-  margin-bottom: 14px;
+  line-height: 1.4;
+  margin-bottom: 12px;
   background: var(--gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.result-text {
-  font-size: 15px;
+.result-desc {
+  font-size: 14px;
   color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 22px;
+}
+
+/* 추천 아이템 카드 */
+.result-card--item {
+  background: rgba(139, 92, 246, 0.06);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+.result-card--item::before {
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+}
+
+.card-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.item-text {
+  font-size: 14px;
+  color: var(--text-primary);
   line-height: 1.75;
-  margin-bottom: 24px;
+}
+
+/* 짝꿍 카드 행 */
+.result-card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.result-card--match {
+  padding: 18px 16px;
+}
+
+.result-card--match.good {
+  background: rgba(16, 185, 129, 0.06);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.result-card--match.good::before {
+  background: linear-gradient(90deg, #10b981, #06b6d4);
+}
+
+.result-card--match.bad {
+  background: rgba(236, 72, 153, 0.06);
+  border-color: rgba(236, 72, 153, 0.2);
+}
+
+.result-card--match.bad::before {
+  background: linear-gradient(90deg, #f59e0b, #ec4899);
+}
+
+.match-text {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-weight: 500;
 }
 
 /* Confidence Bar */
