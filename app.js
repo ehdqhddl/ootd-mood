@@ -47,6 +47,7 @@ const retryBtn        = document.getElementById("retryBtn");
 let model = null;
 let currentImageElement = null;
 
+
 // ─── 이미지 업로드 & 미리보기 ────────────────────────────────────────────────
 imageUpload.addEventListener("change", (e) => {
   const file = e.target.files[0];
@@ -88,9 +89,7 @@ const handleFile = (file) => {
   reader.readAsDataURL(file);
 };
 
-// ─── 다시 고르기 ─────────────────────────────────────────────────────────────
-retakeBtn.addEventListener("click", resetUpload);
-
+// ─── 다시 고르기 / 처음부터 다시 ────────────────────────────────────────────
 const resetUpload = () => {
   imageUpload.value = "";
   previewImage.src = "";
@@ -101,7 +100,7 @@ const resetUpload = () => {
   analyzeBtn.disabled = true;
 };
 
-// ─── 처음부터 다시 ───────────────────────────────────────────────────────────
+retakeBtn.addEventListener("click", resetUpload);
 retryBtn.addEventListener("click", resetUpload);
 
 // ─── 모델 로드 (첫 분석 시 lazy load) ───────────────────────────────────────
