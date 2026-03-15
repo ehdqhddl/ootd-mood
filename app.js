@@ -12,8 +12,9 @@ const LOADING_MESSAGES = [
 ];
 
 // ─── 결과 데이터 ─────────────────────────────────────────────────────────────
+// 키 = 모델 metadata.json labels 값과 정확히 일치해야 함
 const MOOD_RESULTS = {
-  "긱시크 (Geek Chic)": {
+  "Geek Chic": {
     badge: "GEEK CHIC",
     title: "안경 쓴 비밀 힙스터 🤓 찐 긱시크 인간",
     desc: "오늘 당신의 룩에서는 너드미와 힙함이 절묘하게 공존하는 향기가 나요! 체크 패턴과 레이어드 스타일이 당신의 지적인 매력을 200% 끌어올리고 있어요.",
@@ -21,7 +22,7 @@ const MOOD_RESULTS = {
     goodMatch: "올드머니 인간 (지성미 콜라보)",
     badMatch: "Y2K 인간 (에너지가 너무 달라!)",
   },
-  "고프코어 (Gorpcore)": {
+  "Gorpcore": {
     badge: "GORPCORE",
     title: "도심 속 아웃도어 탐험가 🏕️ 찐 고프코어 인간",
     desc: "오늘 당신의 룩에서는 자연 친화적인 쿨한 에너지가 느껴져요! 기능성 아웃도어 피스와 스트리트 감성의 조합이 당신의 힙한 탐험가 무드를 완성시켜주고 있어요.",
@@ -29,7 +30,7 @@ const MOOD_RESULTS = {
     goodMatch: "긱시크 인간 (기능미 + 지성미 콜라보)",
     badMatch: "발레코어 인간 (무드가 정반대!)",
   },
-  "올드머니 (Old Money)": {
+  "Old Money": {
     badge: "OLD MONEY",
     title: "걸어다니는 인간 랄프로렌 💎 찐 올드머니 인간",
     desc: "오늘 당신의 룩에서는 로고 없이도 빛나는 조용한 럭셔리 향기가 나요! 절제된 컬러와 클래식한 실루엣이 당신의 고급스러운 무드를 완성시켜주고 있어요.",
@@ -37,7 +38,7 @@ const MOOD_RESULTS = {
     goodMatch: "긱시크 인간 (지성미 콜라보)",
     badMatch: "Y2K 인간 (너무 시끄러워!)",
   },
-  "발레코어 (Balletcore)": {
+  "Balletcore": {
     badge: "BALLETCORE",
     title: "인간 복숭아 등장 🍑 로맨틱 발레코어 인간",
     desc: "오늘 당신의 룩에서는 몽글몽글한 핑크빛 쿨톤 향기가 나네요! 부드러운 파스텔 톤과 러블리한 디테일이 당신의 사랑스러움을 200% 끌어올려주고 있어요.",
@@ -45,7 +46,7 @@ const MOOD_RESULTS = {
     goodMatch: "고프코어 인간 (서로의 매력을 보완해 줌)",
     badMatch: "올드머니 인간 (너무 진지해!)",
   },
-  "Y2K 맥시멀리즘": {
+  "Y2K": {
     badge: "Y2K",
     title: "2000년대 타임머신 탑승 완료 ✨ 찐 Y2K 인간",
     desc: "오늘 당신의 룩에서는 화려하고 자유분방한 2000년대 에너지가 폭발하고 있어요! 컬러풀한 레이어링과 맥시멀한 디테일이 당신의 개성을 200% 발산시켜주고 있어요.",
@@ -202,6 +203,7 @@ const showResult = (className, probability) => {
     badMatch: "없음 (무드 천재)",
   };
 
+  shareBtn.dataset.className = className;
   resultBadge.textContent    = data.badge;
   resultTitle.textContent    = data.title;
   resultDesc.textContent     = data.desc;
@@ -226,10 +228,8 @@ Kakao.init("a9c5a8d8900bca75619ed492127a0b50");
 
 // ─── 카카오톡 공유 ───────────────────────────────────────────────────────────
 shareBtn.addEventListener("click", () => {
-  const className = resultTitle.textContent || "나의 OOTD 무드";
-  const data = MOOD_RESULTS[
-    Object.keys(MOOD_RESULTS).find(k => MOOD_RESULTS[k].title === className)
-  ] ?? { desc: "" };
+  const className = shareBtn.dataset.className || "";
+  const data = MOOD_RESULTS[className] ?? { desc: "" };
   const serviceUrl = "https://ootd-mood.ehdqhddl91.workers.dev";
 
   Kakao.Share.sendDefault({
